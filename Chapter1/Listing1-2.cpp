@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+// extern "C" namespace prevents
+// "name mangling" by the C++
+// compiler
+
+extern "C"
+{
+    // Here's the external function,
+    // written in assembly language,
+    // that this program will call:
+
+    void asmMain( void );
+};
+
+int main(void)
+{
+    printf( "Calling asmMain:\n" );
+    asmMain();
+    printf( "Returned from asmMain\n" );
+}

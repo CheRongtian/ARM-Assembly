@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 g++ -o Listing1-1 Listing1-1.S
 ./Listing1-1
 
