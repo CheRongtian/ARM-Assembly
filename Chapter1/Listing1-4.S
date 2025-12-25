@@ -1,47 +1,64 @@
-.data
-    .align 3
-titleStr:
-    .asciz "Listing 1-4: Interaction"
-promptStr:
-    .asciz "Enter A String: "
-fmtStr:
-    .asciz "The assembly code received: %s\n"
+// Listing1-4.S
+//
+// The venerable "Hello, world!" program, written
+// in ARM assembly by calling the C stdlib printf
+// function.
+//
+// The Art of ARM Assembly include file.
+//
+// This provides several things for us.
+// First, it makes "asmFunc" global and
+// automatically converts it to "_asmFunc"
+// if this program is being assembled under macOS.
+// It also converts "printf" to "_printf" for macOS.
 
-    .align 4
-buffer:
-    .fill 256, 1, 0
+            #include "aoaa.inc"
+            
+            .data
+saveLR:     .dword  0       // Save LR here.
+title:      .asciz  "Listing1-4"
+hwStr:      .asciz  "Hello, world\n"
+buffer: .space  256
+            
+            .text
+            
+// getTitle function, required by c.cpp, returns the
+// name of this program. Note that the title string
+// must appear in the .text section.
 
-.text
-    .align 2
-    .global _asmMain
-    .global _getTitle
-    .global _printf
-    .global _readLine
+            .align  2       // Code must be 4-byte aligned
+getTitle:
+            lea     x0, title
+            ret
+            
+            
+// Here's the main function called by the c.cpp function:
 
-_getTitle:
-    adrp    x0, titleStr@PAGE
-    add     x0, x0, titleStr@PAGEOFF
-    ret
+asmMain:
 
-_asmMain:
-    stp     x29, x30, [sp, #-16]!
-    mov     x29, sp
+// First of all, LR is *highly* volatile and will
+// be wiped out when this code calls the printf()
+// function. So we need to save LR in memory somewhere
+// so we can return back to the OS using its value.
+// For right now, just save it in the "saveLR" global
+// variable
 
-    adrp    x0, promptStr@PAGE
-    add     x0, x0, promptStr@PAGEOFF
-    bl      _printf
+            lea     x0, saveLR
+            str     lr, [x0]
+            
+// Okay, set up printf parameter (format string)
+// and call printf():
 
-    adrp    x0, buffer@PAGE
-    add     x0, x0, buffer@PAGEOFF
-    mov     x1, #256
-    bl      _readLine
+            lea     x0, hwStr   // hwStr must be in .text
+            bl      printf      // Print the string
 
-    adrp    x0, fmtStr@PAGE
-    add     x0, x0, fmtStr@PAGEOFF
+// Back from printf(), restore LR with its original
+// value so we can return to the OS:
 
-    adrp    x1, buffer@PAGE
-    add     x1, x1, buffer@PAGEOFF
-    bl      _printf
+            lea     x0, saveLR
+            ldr     lr, [x0]
+            
+// Return to the OS:
 
-    ldp     x29, x30, [sp], #16
-    ret
+            ret
+            
