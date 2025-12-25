@@ -9,8 +9,9 @@ Book/
 │
 └── Chapter 1/
     ├── 1. Listing1-1 + relevant files
-    ├── ... TBC
-    └── 
+    ├── 2. Listing1-2 + relevant files
+    ├── 3. Listing1-3 + relevant files
+    └── 4. Listing1-4
 ```
 
 - Just remind: if you want to use the command(.sh files)
@@ -18,7 +19,3 @@ Book/
 chmod +x xxxxxxx.sh # for permission
 ./xxxxxxx.sh
 ```
-
-#### 📓 2025.12.05:
-1. Listing1-1.S completed ξ( ✿＞◡❛)
-2. Listing1-2.S, Listing1-3.S, Listing1-2.cpp complete👏
